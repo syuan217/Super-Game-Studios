@@ -281,6 +281,24 @@ This is a **template**, not a locked framework. Everything is meant to be custom
 
 Primary development and testing on **Windows 10** with Git Bash. All hooks use POSIX-compatible patterns (`grep -E`, not `grep -P`) and include fallbacks for missing tools, so they should run on macOS and Linux. The `notify.sh` hook uses PowerShell for Windows toast notifications and is a no-op elsewhere — desktop notifications on macOS/Linux are not yet wired. Cross-platform testing is ongoing; please file issues for any platform-specific breakage.
 
+## ZCode Support
+
+This template also runs on **ZCode**, side by side with Claude Code:
+
+- `.claude/` stays the single source of truth; the ZCode layer is generated
+  from it (`tools/zcode/sync.sh`) and committed, so a cloned repo works
+  out-of-the-box in either client.
+- All 49 agents are registered natively from `.zcode/agents/` (tool
+  restrictions and turn limits enforced at runtime); all 73 skills are
+  installed under `.zcode/skills/` (`/code-review` appears as
+  `ccgs-code-review` to avoid personal-skill collisions).
+- 9 of the 12 hooks are wired via `.zcode/config.json`, including a deny guard
+  that replicates the Claude permission deny-list (`rm -rf`, force push,
+  `sudo`, `.env` access).
+
+See [docs/ZCODE-SUPPORT.md](docs/ZCODE-SUPPORT.md) for the full mechanism
+mapping, known behavioral differences, and the post-merge regeneration step.
+
 ## Community
 
 - **Discussions** — [GitHub Discussions](https://github.com/Donchitos/Claude-Code-Game-Studios/discussions) for questions, ideas, and showcasing what you've built

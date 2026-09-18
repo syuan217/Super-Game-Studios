@@ -1,0 +1,93 @@
+{
+  "hooks": {
+    "enabled": true,
+    "events": {
+      "SessionStart": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash tools/zcode/hook-adapter.sh .claude/hooks/session-start.sh",
+              "timeout": 10
+            },
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash tools/zcode/hook-adapter.sh .claude/hooks/detect-gaps.sh",
+              "timeout": 10
+            }
+          ]
+        },
+        {
+          "matcher": "compact",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash tools/zcode/hook-adapter.sh .claude/hooks/post-compact.sh",
+              "timeout": 10
+            }
+          ]
+        }
+      ],
+      "PreToolUse": [
+        {
+          "matcher": "Bash",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash .claude/hooks/validate-commit.sh",
+              "timeout": 15
+            },
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash .claude/hooks/validate-push.sh",
+              "timeout": 10
+            },
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash tools/zcode/guard-deny.sh",
+              "timeout": 10
+            }
+          ]
+        },
+        {
+          "matcher": "Read",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash tools/zcode/guard-deny.sh",
+              "timeout": 10
+            }
+          ]
+        }
+      ],
+      "PostToolUse": [
+        {
+          "matcher": "Write|Edit",
+          "hooks": [
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash .claude/hooks/validate-assets.sh",
+              "timeout": 10
+            },
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash .claude/hooks/validate-skill-change.sh",
+              "timeout": 5
+            }
+          ]
+        }
+      ],
+      "Stop": [
+        {
+          "hooks": [
+            {
+              "type": "command",
+              "command": "cd \"${CLAUDE_PROJECT_DIR:-.}\" && bash .claude/hooks/session-stop.sh",
+              "timeout": 10
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
